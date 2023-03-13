@@ -9,7 +9,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: AKIAYQFDFO25HQNLVQY5
       AWS_SECRET_ACCESS_KEY: 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
-      AWS_DEFAULT_REGION: us-west-2
+      AWS_REGION: us-west-2
     steps:
       - uses: actions/checkout@v1
 
