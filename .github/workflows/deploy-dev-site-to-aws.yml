@@ -9,17 +9,13 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: AKIAYQFDFO25HQNLVQY5
       AWS_SECRET_ACCESS_KEY: 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
-      AWS_REGION: us-west-2
     steps:
       - uses: actions/checkout@v1
-
-      - name: set region
-        run: export AWS_REGION=us-west-2
 
       - name: Deploy
         uses: lbertenasco/s3-deploy@v1.2.4
         with:
           folder: .
-          bucket: martinying-develop
+          bucket: martinying-develop-2
           dist-id: E1MS8ZKXIRP98C
           invalidation: / *
