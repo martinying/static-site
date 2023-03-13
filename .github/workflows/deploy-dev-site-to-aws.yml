@@ -6,16 +6,18 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: AKIAYQFDFO25HQNLVQY5
-      AWS_SECRET_ACCESS_KEY: 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
     steps:
       - uses: actions/checkout@v1
 
-      - name: Deploy
-        uses: lbertenasco/s3-deploy@v1.2.4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          folder: .
-          bucket: martinying-develop-2
-          dist-id: E1MS8ZKXIRP98C
-          invalidation: / *
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::584457746106:role/github
+          role-session-name: MySessionName
+      - name: Copy files to the test website
+        run: |
+          aws s3 sync . s3://martinying-develop-2
+      - name: Create CloudFront Invalidation for the test website
+        run: |
+          aws cloudfront create-invalidation --distribution-id E1MS8ZKXIRP98C --paths "/*"
