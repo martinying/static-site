@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - name: set region
+        run: export AWS_REGION=us-west-2
+
       - name: Deploy
         uses: lbertenasco/s3-deploy@v1.2.4
         with:
