@@ -6,6 +6,7 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    environment: develop
     permissions:
       id-token: write
       contents: read
@@ -15,13 +16,11 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          #aws-access-key-id: AKIAYQFDFO25HQNLVQY5
-          #aws-secret-access-key: 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
-          role-to-assume: arn:aws:iam::584457746106:role/mynewrole
-          aws-region: us-east-1
+          role-to-assume: ${{secrets.AWS_ROLE_TO_ASSUME}}
+          aws-region: ${{secrets.AWS_DEFAULT_REGION}}
       - name: Copy files to the test website
         run: |
-          aws s3 sync . s3://martinying-develop-2
+          aws s3 sync . s3://${{secrets.S3_BUCKET}}
       - name: Create CloudFront Invalidation for the test website
         run: |
-          aws cloudfront create-invalidation --distribution-id E1MS8ZKXIRP98C --paths "/*"
+          aws cloudfront create-invalidation --distribution-id ${{secrets.CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
