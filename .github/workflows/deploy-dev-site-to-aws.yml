@@ -6,17 +6,21 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+    environment: develop
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v1
 
-      - name: Deploy
-        uses: lbertenasco/s3-deploy@v1.2.4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          folder: .
-          bucket: ${{ secrets.S3_BUCKET }}
-          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-          invalidation: / *
+          role-to-assume: ${{secrets.AWS_ROLE_TO_ASSUME}}
+          aws-region: ${{secrets.AWS_DEFAULT_REGION}}
+      - name: Copy files to the test website
+        run: |
+          aws s3 sync . s3://${{secrets.S3_BUCKET}}
+      - name: Create CloudFront Invalidation for the test website
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{secrets.CLOUDFRONT_DISTRIBUTION_ID}} --paths "/*"
