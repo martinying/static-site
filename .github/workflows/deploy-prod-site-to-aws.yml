@@ -2,11 +2,11 @@ name: Deploy GoFunction Test Site to AWS S3 Cloudfront
 on:
   push:
     branches:
-      - develop
+      - main
 jobs:
   run:
     runs-on: ubuntu-latest
-    environment: develop
+    environment: main
     permissions:
       id-token: write
       contents: read
